@@ -21,19 +21,18 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import PrefectureSelect from './PrefectureSelect'; // 都道府県選択コンポーネント
 import ConfirmationModal from './ConfirmationModal'; // 確認モーダル
 
-// const validateName = value => {
-//   if (!value.lastName || !value.firstName) {
-//     return '名前は必須です'; // 名前が空の場合のエラーメッセージ
-//   }
-//   const fullName = `${value.lastName} ${value.firstName}`;
-//   if (fullName.length < 1 || fullName.length > 10) {
-//     return '名前は1文字以上10文字以下';//フルネームの長さが条件に合わない場合はエラーメッセージを返す;
-//   }
-//   return undefined;
-// };
+const validateName = value => {
+  if (!value.lastName || !value.firstName) {
+    return '名前は必須です'; // 名前が空の場合のエラーメッセージ
+  }
+  const fullName = `${value.lastName} ${value.firstName}`;
+  if (fullName.length < 1 || fullName.length > 10) {
+    return '名前は1文字以上10文字以下'; // フルネームの長さが条件に合わない場合はエラーメッセージを返す
+  }
+  return undefined;
+};
 
 const App = () => {
-  const [name, setName] = useState({ firstName: '', lastName: '' });
   const [gender, setGender] = useState('');
   const [age, setAge] = useState(1);
   const [prefecture, setPrefecture] = useState('');
@@ -74,39 +73,34 @@ const App = () => {
             setIsOpen(true);
           }}
         >
-          {({ handleChange }) => (
+          {({ handleChange, setFieldValue, values }) => (
             <Form>
               {/* 名前 */}
               <FormControl id="name" mb={4}>
                 <FormLabel>名前</FormLabel>
-                {/* <Field name="name" validate={validateName}> */}
-                {/* <Field name="name">
-                  {({ field, form }) => (
+                <Field name="name" validate={validateName}>
+                  {() => (
                     <>
                       <Input
                         placeholder="苗字"
-                        {...field}
-                        value={field.value.lastName}
-                        onChange={e => {
-                          const newValue = e.target.value; // 入力値を取得
-                          field.onChange({
-                            ...field.value,
-                            lastName: newValue, // 苗字を更新
-                          });
-                        }}
+                        value={values.name.lastName}
+                        onChange={e =>
+                          setFieldValue('name', {
+                            ...values.name,
+                            lastName: e.target.value,
+                          })
+                        }
                         mb={2}
                       />
                       <Input
                         placeholder="名前"
-                        {...field}
-                        value={field.value.firstName}
-                        onChange={e => {
-                          const newValue = e.target.value;
-                          field.onChange({
-                            ...field.value,
-                            firstName: newValue,
-                          });
-                        }}
+                        value={values.name.firstName}
+                        onChange={e =>
+                          setFieldValue('name', {
+                            ...values.name,
+                            firstName: e.target.value,
+                          })
+                        }
                       />
                       <ErrorMessage
                         name="name"
@@ -115,7 +109,7 @@ const App = () => {
                       />
                     </>
                   )}
-                </Field> */}
+                </Field>
               </FormControl>
 
               {/* 性別 */}
