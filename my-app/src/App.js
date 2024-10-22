@@ -33,10 +33,6 @@ const validateName = value => {
 };
 
 const App = () => {
-  const [gender, setGender] = useState('');
-  const [age, setAge] = useState(1);
-  const [prefecture, setPrefecture] = useState('');
-  const [selfIntro, setSelfIntro] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [submittedData, setSubmittedData] = useState({});
 
@@ -60,15 +56,19 @@ const App = () => {
       >
         <Formik
           initialValues={{
-            name: { firstName: '', lastName: '' }, // 名前だけの初期値
+            name: { firstName: '', lastName: '' }, // 名前の初期値
+            gender: '',
+            age: 1,
+            prefecture: '',
+            selfIntro: '',
           }}
           onSubmit={values => {
             setSubmittedData({
               fullName: `${values.name.lastName} ${values.name.firstName}`,
-              gender,
-              age,
-              prefecture,
-              selfIntro,
+              gender: values.gender,
+              age: values.age,
+              prefecture: values.prefecture,
+              selfIntro: values.selfIntro,
             });
             setIsOpen(true);
           }}
@@ -115,46 +115,65 @@ const App = () => {
               {/* 性別 */}
               <FormControl id="gender" mb={4}>
                 <FormLabel>性別</FormLabel>
-                <RadioGroup onChange={setGender} value={gender}>
-                  <Stack direction="row">
-                    <Radio value="男性">男性</Radio>
-                    <Radio value="女性">女性</Radio>
-                    <Radio value="その他">その他</Radio>
-                  </Stack>
-                </RadioGroup>
+                <Field name="gender">
+                  {() => (
+                    <RadioGroup
+                      onChange={value => setFieldValue('gender', value)}
+                      value={values.gender}
+                    >
+                      <Stack direction="row">
+                        <Radio value="1">男性</Radio>
+                        <Radio value="2">女性</Radio>
+                        <Radio value="3">その他</Radio>
+                      </Stack>
+                    </RadioGroup>
+                  )}
+                </Field>
               </FormControl>
 
               {/* 年齢 */}
               <FormControl id="age" mb={4}>
                 <FormLabel>年齢</FormLabel>
-                <NumberInput
-                  value={age}
-                  onChange={value => setAge(parseInt(value))}
-                  min={0}
-                  max={120}
-                >
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
+                <Field name="age">
+                  {() => (
+                    <NumberInput
+                      value={values.age}
+                      onChange={value => setFieldValue('age', parseInt(value))}
+                      min={0}
+                      max={120}
+                    >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  )}
+                </Field>
               </FormControl>
 
               {/* 出身 */}
-              <PrefectureSelect
-                value={prefecture}
-                onChange={e => setPrefecture(e.target.value)}
-              />
+              <Field name="prefecture">
+                {() => (
+                  <PrefectureSelect
+                    value={values.prefecture}
+                    onChange={e => setFieldValue('prefecture', e.target.value)}
+                  />
+                )}
+              </Field>
 
               {/* 自己PR */}
               <FormControl id="self-intro" mb={4}>
                 <FormLabel>自己PR</FormLabel>
-                <Textarea
-                  placeholder="自己PRを入力してください"
-                  value={selfIntro}
-                  onChange={e => setSelfIntro(e.target.value)}
-                />
+                <Field name="selfIntro">
+                  {() => (
+                    <Textarea
+                      placeholder="自己PRを入力してください"
+                      value={values.selfIntro}
+                      onChange={e => setFieldValue('selfIntro', e.target.value)}
+                    />
+                  )}
+                </Field>
               </FormControl>
 
               {/* 登録ボタン */}
