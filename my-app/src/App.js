@@ -21,13 +21,25 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import PrefectureSelect from './PrefectureSelect'; // 都道府県選択コンポーネント
 import ConfirmationModal from './ConfirmationModal'; // 確認モーダル
 
+// 名前のバリデーション関数
 const validateName = value => {
-  if (!value.lastName || !value.firstName) {
-    return '名前は必須です'; // 名前が空の場合のエラーメッセージ
+  if (!value.lastName) {
+    return '姓は必須です'; // 姓が空の場合
+  }
+  if (!value.firstName) {
+    return '名は必須です'; // 名が空の場合
   }
   const fullName = `${value.lastName} ${value.firstName}`;
   if (fullName.length < 1 || fullName.length > 10) {
-    return '名前は1文字以上10文字以下'; // フルネームの長さが条件に合わない場合はエラーメッセージを返す
+    return '名前は1文字以上10文字以下'; // フルネームの長さが条件に合わない場合
+  }
+  return undefined;
+};
+
+// 性別のバリデーション関数
+const validateGender = value => {
+  if (!value) {
+    return '性別は必須です'; // 性別が選択されていない場合
   }
   return undefined;
 };
@@ -56,7 +68,7 @@ const App = () => {
       >
         <Formik
           initialValues={{
-            name: { firstName: '', lastName: '' }, // 名前の初期値
+            name: { firstName: '', lastName: '' }, // 姓と名の初期値
             gender: '',
             age: 1,
             prefecture: '',
@@ -75,14 +87,14 @@ const App = () => {
         >
           {({ handleChange, setFieldValue, values }) => (
             <Form>
-              {/* 名前 */}
+              {/* 名前*/}
               <FormControl id="name" mb={4}>
                 <FormLabel>名前</FormLabel>
                 <Field name="name" validate={validateName}>
                   {() => (
                     <>
                       <Input
-                        placeholder="苗字"
+                        placeholder="姓"
                         value={values.name.lastName}
                         onChange={e =>
                           setFieldValue('name', {
@@ -93,7 +105,7 @@ const App = () => {
                         mb={2}
                       />
                       <Input
-                        placeholder="名前"
+                        placeholder="名"
                         value={values.name.firstName}
                         onChange={e =>
                           setFieldValue('name', {
@@ -115,18 +127,25 @@ const App = () => {
               {/* 性別 */}
               <FormControl id="gender" mb={4}>
                 <FormLabel>性別</FormLabel>
-                <Field name="gender">
+                <Field name="gender" validate={validateGender}>
                   {() => (
-                    <RadioGroup
-                      onChange={value => setFieldValue('gender', value)}
-                      value={values.gender}
-                    >
-                      <Stack direction="row">
-                        <Radio value="1">男性</Radio>
-                        <Radio value="2">女性</Radio>
-                        <Radio value="3">その他</Radio>
-                      </Stack>
-                    </RadioGroup>
+                    <>
+                      <RadioGroup
+                        onChange={value => setFieldValue('gender', value)}
+                        value={values.gender}
+                      >
+                        <Stack direction="row">
+                          <Radio value="1">男性</Radio>
+                          <Radio value="2">女性</Radio>
+                          <Radio value="3">その他</Radio>
+                        </Stack>
+                      </RadioGroup>
+                      <ErrorMessage
+                        name="gender"
+                        component="div"
+                        style={{ color: 'red' }}
+                      />
+                    </>
                   )}
                 </Field>
               </FormControl>
