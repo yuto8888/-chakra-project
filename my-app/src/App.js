@@ -44,6 +44,25 @@ const validateGender = value => {
   return undefined;
 };
 
+// 年齢のバリデーション関数
+const validateAge = value => {
+  // 年齢が未入力の場合
+  if (!value && value !== 0) {
+    return '年齢は必須です';
+  }
+
+  if (value < 0) {
+    return '年齢は0以上でなければなりません';
+  }
+
+  if (value > 100) {
+    return '年齢は100以下でなければなりません';
+  }
+
+  // すべての条件を満たす場合
+  return undefined;
+};
+
 const App = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [submittedData, setSubmittedData] = useState({});
@@ -68,9 +87,9 @@ const App = () => {
       >
         <Formik
           initialValues={{
-            name: { firstName: '', lastName: '' }, // 姓と名の初期値
+            name: { firstName: '', lastName: '' },
             gender: '',
-            age: 1,
+            age: '',
             prefecture: '',
             selfIntro: '',
           }}
@@ -87,7 +106,7 @@ const App = () => {
         >
           {({ handleChange, setFieldValue, values }) => (
             <Form>
-              {/* 名前*/}
+              {/* 名前 */}
               <FormControl id="name" mb={4}>
                 <FormLabel>名前</FormLabel>
                 <Field name="name" validate={validateName}>
@@ -153,20 +172,29 @@ const App = () => {
               {/* 年齢 */}
               <FormControl id="age" mb={4}>
                 <FormLabel>年齢</FormLabel>
-                <Field name="age">
+                <Field name="age" validate={validateAge}>
                   {() => (
-                    <NumberInput
-                      value={values.age}
-                      onChange={value => setFieldValue('age', parseInt(value))}
-                      min={0}
-                      max={120}
-                    >
-                      <NumberInputField />
-                      <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                      </NumberInputStepper>
-                    </NumberInput>
+                    <>
+                      <NumberInput
+                        value={values.age}
+                        onChange={value =>
+                          setFieldValue('age', parseInt(value))
+                        }
+                        min={0}
+                        max={100}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                      <ErrorMessage
+                        name="age"
+                        component="div"
+                        style={{ color: 'red' }}
+                      />
+                    </>
                   )}
                 </Field>
               </FormControl>
