@@ -23,6 +23,9 @@ import ConfirmationModal from './ConfirmationModal'; // 確認モーダル
 
 // 名前のバリデーション関数
 const validateName = value => {
+  if (!value.lastName && !value.firstName) {
+    return '名前は必須です'; // 姓と名の両方が空の場合
+  }
   if (!value.lastName) {
     return '姓は必須です'; // 姓が空の場合
   }
