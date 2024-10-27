@@ -18,59 +18,13 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import PrefectureSelect from './PrefectureSelect'; // 都道府県選択コンポーネント
-import ConfirmationModal from './ConfirmationModal'; // 確認モーダル
-
-// 名前のバリデーション関数
-const validateName = value => {
-  if (!value.lastName && !value.firstName) {
-    return '名前は必須です'; // 姓と名の両方が空の場合
-  }
-  if (!value.lastName) {
-    return '姓は必須です'; // 姓が空の場合
-  }
-  if (!value.firstName) {
-    return '名は必須です'; // 名が空の場合
-  }
-  const fullName = `${value.lastName} ${value.firstName}`;
-  if (fullName.length < 1 || fullName.length > 10) {
-    return '名前は1文字以上10文字以下'; // フルネームの長さが条件に合わない場合
-  }
-  return undefined;
-};
-
-// 性別のバリデーション関数
-const validateGender = value => {
-  if (!value) {
-    return '性別は必須です'; // 性別が選択されていない場合
-  }
-  return undefined;
-};
-
-// 年齢のバリデーション関数
-const validateAge = value => {
-  // 年齢が未入力の場合
-  if (!value && value !== 0) {
-    return '年齢は必須です';
-  }
-
-  if (value < 0) {
-    return '年齢は0以上でなければなりません';
-  }
-
-  if (value > 100) {
-    return '年齢は100以下でなければなりません';
-  }
-
-  // すべての条件を満たす場合
-  return undefined;
-};
+import PrefectureSelect from './PrefectureSelect';
+import ConfirmationModal from './ConfirmationModal';
 
 const App = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [submittedData, setSubmittedData] = useState({});
 
-  // モーダルを閉じる関数
   const handleClose = () => setIsOpen(false);
   const handleConfirm = () => {
     console.log('登録されました:', submittedData);
@@ -106,13 +60,37 @@ const App = () => {
             });
             setIsOpen(true);
           }}
+          validate={values => {
+            const errors = {};
+            if (!values.name.lastName && !values.name.firstName) {
+              errors.name = '名前は必須です';
+            } else if (!values.name.lastName) {
+              errors.name = '姓は必須です';
+            } else if (!values.name.firstName) {
+              errors.name = '名は必須です';
+            }
+            if (!values.gender) {
+              errors.gender = '性別は必須です';
+            }
+            if (!values.age) {
+              errors.age = '年齢は必須です';
+            } else if (values.age < 0 || values.age > 100) {
+              errors.age = '年齢は0以上100以下です';
+            }
+            if (!values.prefecture) {
+              errors.prefecture = '出身は必須です';
+            }
+            if (values.selfIntro.length < 1 || values.selfIntro.length > 100) {
+              errors.selfIntro = '自己PRは1文字以上100文字以下です';
+            }
+            return errors;
+          }}
         >
           {({ handleChange, setFieldValue, values }) => (
             <Form>
-              {/* 名前 */}
               <FormControl id="name" mb={4}>
                 <FormLabel>名前</FormLabel>
-                <Field name="name" validate={validateName}>
+                <Field name="name">
                   {() => (
                     <>
                       <Input
@@ -146,10 +124,9 @@ const App = () => {
                 </Field>
               </FormControl>
 
-              {/* 性別 */}
               <FormControl id="gender" mb={4}>
                 <FormLabel>性別</FormLabel>
-                <Field name="gender" validate={validateGender}>
+                <Field name="gender">
                   {() => (
                     <>
                       <RadioGroup
@@ -172,10 +149,9 @@ const App = () => {
                 </Field>
               </FormControl>
 
-              {/* 年齢 */}
               <FormControl id="age" mb={4}>
                 <FormLabel>年齢</FormLabel>
-                <Field name="age" validate={validateAge}>
+                <Field name="age">
                   {() => (
                     <>
                       <NumberInput
@@ -202,7 +178,6 @@ const App = () => {
                 </Field>
               </FormControl>
 
-              {/* 出身 */}
               <Field name="prefecture">
                 {() => (
                   <PrefectureSelect
@@ -212,7 +187,6 @@ const App = () => {
                 )}
               </Field>
 
-              {/* 自己PR */}
               <FormControl id="self-intro" mb={4}>
                 <FormLabel>自己PR</FormLabel>
                 <Field name="selfIntro">
@@ -224,9 +198,13 @@ const App = () => {
                     />
                   )}
                 </Field>
+                <ErrorMessage
+                  name="selfIntro"
+                  component="div"
+                  style={{ color: 'red' }}
+                />
               </FormControl>
 
-              {/* 登録ボタン */}
               <Flex justifyContent="flex-end" mt={4}>
                 <Button colorScheme="green" type="submit">
                   登録
@@ -237,7 +215,6 @@ const App = () => {
         </Formik>
       </Box>
 
-      {/* モーダル */}
       <ConfirmationModal
         isOpen={isOpen}
         onClose={handleClose}

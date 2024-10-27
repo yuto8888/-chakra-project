@@ -1,7 +1,8 @@
 import React from 'react';
 import { FormControl, FormLabel, Select } from '@chakra-ui/react';
+import { Field, ErrorMessage } from 'formik';
 
-const PrefectureSelect = ({ value, onChange }) => {
+const PrefectureSelect = () => {
   const prefectures = [
     '北海道',
     '青森県',
@@ -53,20 +54,29 @@ const PrefectureSelect = ({ value, onChange }) => {
   ];
 
   return (
-    <FormControl id="prefecture" mb={4}>
-      <FormLabel>出身</FormLabel>
-      <Select
-        placeholder="都道府県を選んでください"
-        value={value}
-        onChange={onChange}
-      >
-        {prefectures.map((pref, index) => (
-          <option key={index} value={pref}>
-            {pref}
-          </option>
-        ))}
-      </Select>
-    </FormControl>
+    <Field name="prefecture">
+      {({ field, form }) => (
+        <FormControl
+          id="prefecture"
+          mb={4}
+          isInvalid={form.errors.prefecture && form.touched.prefecture}
+        >
+          <FormLabel>出身</FormLabel>
+          <Select {...field} placeholder="都道府県を選んでください">
+            {prefectures.map((pref, index) => (
+              <option key={index} value={pref}>
+                {pref}
+              </option>
+            ))}
+          </Select>
+          <ErrorMessage
+            name="prefecture"
+            component="div"
+            style={{ color: 'red' }}
+          />
+        </FormControl>
+      )}
+    </Field>
   );
 };
 
