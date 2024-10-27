@@ -75,13 +75,15 @@ const App = () => {
             if (!values.age) {
               errors.age = '年齢は必須です';
             } else if (values.age < 0 || values.age > 100) {
-              errors.age = '年齢は0以上100以下です';
+              errors.age = '年齢は0以上100以下でなければなりません';
             }
             if (!values.prefecture) {
               errors.prefecture = '出身は必須です';
             }
-            if (values.selfIntro.length < 1 || values.selfIntro.length > 100) {
-              errors.selfIntro = '自己PRは1文字以上100文字以下です';
+            if (!values.selfIntro) {
+              errors.selfIntro = '自己PRは必須です';
+            } else if (values.selfIntro.length > 100) {
+              errors.selfIntro = '自己PRは100文字以内で入力してください';
             }
             return errors;
           }}
@@ -206,7 +208,10 @@ const App = () => {
               </FormControl>
 
               <Flex justifyContent="flex-end" mt={4}>
-                <Button colorScheme="green" type="submit">
+                <Button mr={2} colorScheme="red" type="reset" width="70px">
+                  クリア　
+                </Button>
+                <Button colorScheme="green" type="submit" width="70px">
                   登録
                 </Button>
               </Flex>
