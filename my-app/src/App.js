@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
   ChakraProvider,
   Box,
@@ -26,9 +27,22 @@ const App = () => {
   const [submittedData, setSubmittedData] = useState({});
 
   const handleClose = () => setIsOpen(false);
+
   const handleConfirm = () => {
-    console.log('登録されました:', submittedData);
-    handleClose();
+    axios
+      .post('http://localhost:3000/submit', submittedData, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .then(response => {
+        console.log('サーバーからのレスポンス:', response.data);
+        alert('登録が完了しました');
+        handleClose();
+      })
+      .catch(error => {
+        console.error('送信エラー:', error);
+        alert('登録に失敗しました');
+        handleClose();
+      });
   };
 
   return (
@@ -136,7 +150,7 @@ const App = () => {
                         value={values.gender}
                       >
                         <Stack direction="row">
-                          <Radio value="1">男性</Radio>
+                          　<Radio value="1">男性</Radio>
                           <Radio value="2">女性</Radio>
                           <Radio value="3">その他</Radio>
                         </Stack>
