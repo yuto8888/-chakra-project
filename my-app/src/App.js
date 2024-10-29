@@ -18,11 +18,12 @@ import {
   Stack,
   Flex,
 } from '@chakra-ui/react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import PrefectureSelect from './PrefectureSelect';
 import ConfirmationModal from './ConfirmationModal';
+import ErrorText from './Errorext';
 
-const App = () => {
+function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [submittedData, setSubmittedData] = useState({});
 
@@ -130,11 +131,7 @@ const App = () => {
                           })
                         }
                       />
-                      <ErrorMessage
-                        name="name"
-                        component="div"
-                        style={{ color: 'red' }}
-                      />
+                      <ErrorText name="name" />
                     </>
                   )}
                 </Field>
@@ -150,16 +147,12 @@ const App = () => {
                         value={values.gender}
                       >
                         <Stack direction="row">
-                          　<Radio value="1">男性</Radio>
+                          <Radio value="1">男性</Radio>
                           <Radio value="2">女性</Radio>
                           <Radio value="3">その他</Radio>
                         </Stack>
                       </RadioGroup>
-                      <ErrorMessage
-                        name="gender"
-                        component="div"
-                        style={{ color: 'red' }}
-                      />
+                      <ErrorText name="gender" />
                     </>
                   )}
                 </Field>
@@ -184,11 +177,7 @@ const App = () => {
                           <NumberDecrementStepper />
                         </NumberInputStepper>
                       </NumberInput>
-                      <ErrorMessage
-                        name="age"
-                        component="div"
-                        style={{ color: 'red' }}
-                      />
+                      <ErrorText name="age" />
                     </>
                   )}
                 </Field>
@@ -214,16 +203,12 @@ const App = () => {
                     />
                   )}
                 </Field>
-                <ErrorMessage
-                  name="selfIntro"
-                  component="div"
-                  style={{ color: 'red' }}
-                />
+                <ErrorText name="selfIntro" />
               </FormControl>
 
               <Flex justifyContent="flex-end" mt={4}>
                 <Button mr={2} colorScheme="red" type="reset" width="70px">
-                  クリア　
+                  クリア
                 </Button>
                 <Button colorScheme="green" type="submit" width="70px">
                   登録
@@ -242,6 +227,6 @@ const App = () => {
       />
     </ChakraProvider>
   );
-};
+}
 
 export default App;
