@@ -37,13 +37,12 @@ function App() {
       .then(response => {
         console.log('サーバーからのレスポンス:', response.data);
         alert('登録が完了しました');
-        handleClose();
       })
       .catch(error => {
         console.error('送信エラー:', error);
         alert('登録に失敗しました');
-        handleClose();
-      });
+      })
+      .finally(() => handleClose());
   };
 
   return (
